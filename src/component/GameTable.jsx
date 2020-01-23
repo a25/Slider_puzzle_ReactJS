@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import DragElement from "./DragElement";
 const checkSequence = (matrix, n) => {
   let count = 0;
   for (let row of matrix) {
     for (let col of row) {
       count += 1;
-      debugger;
       if (col != count) {
         if (count != n) {
           return 0;
@@ -21,23 +20,33 @@ const trackElements = (
   destElCol,
   destElRow,
   props,
-  isSwap
+  isSwap,
+  setHistory
 ) => {
   if (isSwap) {
     let n = props.matrix[0].length;
     const temp = props.matrix[sourceElRow][sourceElCol];
     props.matrix[sourceElRow][sourceElCol] = props.matrix[destElRow][destElCol];
     props.matrix[destElRow][destElCol] = temp;
+    setHistory(prev => {
+      console.log("kkk", prev);
+      return [...prev, { [sourceElRow]: destElRow, [sourceElCol]: destElCol }];
+    });
     if (props.matrix[n - 1][n - 1] == 0) {
       let sequenceFound = checkSequence(props.matrix, n);
-      console.log("sequenceFound.......", sequenceFound);
+      alert("sequenceFound.......");
     }
   }
 };
 
 export default props => {
   let matrix = [];
-
+  const tableRef = useRef(null);
+  let [history, setHistory] = useState([]);
+  let getHistory = useMemo(() => {
+    console.log("hdhdhdh", history);
+    return [...history];
+  }, [history]);
   let mapper = number => {
     let squareArray = [];
     let row, col;
@@ -57,6 +66,7 @@ export default props => {
       // console.log(row * 51)
       squareArray.push(
         <DragElement
+          tableRef={tableRef}
           trackElementsFn={(
             sourceElCol,
             sourceElRow,
@@ -71,7 +81,8 @@ export default props => {
               destElCol,
               destElRow,
               props,
-              isSwap
+              isSwap,
+              setHistory
             )
           }
           key={i.toString()}
@@ -92,6 +103,7 @@ export default props => {
       <h3>Sliding puzzle</h3>
       <div
         className="table"
+        ref={tableRef}
         style={{
           width: `${51 * props.number}px`,
           height: `${51 * props.number}px`,
@@ -100,6 +112,13 @@ export default props => {
       >
         {mapper(props.number)}
       </div>
+      <button
+        onClick={() => {
+          console.log(history);
+        }}
+      >
+        {"Go To Previous state"}
+      </button>
     </>
   );
 };

@@ -128,14 +128,14 @@ export default props => {
   useEffect(() => {
     elementRef.current.style.top = props.x4 + "px";
     elementRef.current.style.left = props.x3 + "px";
-    const parent = document.getElementsByClassName("table")[0];
+    // const parent = document.getElementsByClassName("table")[0];
     elementRef.current.onmousedown = e => {
       const col = Number(elementRef.current.getAttribute("data-col"));
       const row = Number(elementRef.current.getAttribute("data-row"));
       e.preventDefault();
       x1 = e.clientX;
       x2 = e.clientY;
-      let children = Array.from(parent.childNodes);
+      let children = Array.from(props.tableRef.current.childNodes);
       let {
         stopX,
         stopY,
