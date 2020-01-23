@@ -4,5 +4,5 @@ import GameTable from "./component/GameTable";
 import "./styles.css";
 
 export default function App() {
-  return <GameTable number={3} />;
+  return <GameTable number={9} />;
 }

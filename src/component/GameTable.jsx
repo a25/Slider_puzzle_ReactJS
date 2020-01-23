@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from "react";
-import "./style.css";
+import React, { useState, useEffect, useRef } from "react";
 import DragElement from "./DragElement";
 const checkSequence = (matrix, n) => {
   let count = 0;
@@ -87,16 +86,20 @@ export default props => {
     }
     return squareArray;
   };
-
+  const width = `${Math.ceil((51 * props.number) / 2)}px`;
   return (
-    <div
-      className="table"
-      style={{
-        width: `${51 * props.number}px`,
-        height: `${51 * props.number}px`
-      }}
-    >
-      {mapper(props.number)}
-    </div>
+    <>
+      <h3>Sliding puzzle</h3>
+      <div
+        className="table"
+        style={{
+          width: `${51 * props.number}px`,
+          height: `${51 * props.number}px`,
+          left: `calc(50% - ${width})`
+        }}
+      >
+        {mapper(props.number)}
+      </div>
+    </>
   );
 };

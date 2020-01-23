@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./style.css";
-
+import React, { useEffect, useRef } from "react";
 const checkElements = (children, filledCellCol, filledCellRow) => {
   let emptyCellCol, emptyCellRow;
   let emptyEl = "";
@@ -73,10 +71,10 @@ const swapElement = (sourceEl, destEl) => {
     if (
       (dr < br &&
         (sourceEl.current.offsetTop <= destEl.offsetTop ||
-          sourceEl.current.offsetTop <= destEl.offsetTop + 51)) ||
+          sourceEl.current.offsetTop <= destEl.offsetTop + 45)) ||
       (dr > br &&
         (sourceEl.current.offsetTop >= destEl.offsetTop ||
-          sourceEl.current.offsetTop >= destEl.offsetTop - 51))
+          sourceEl.current.offsetTop >= destEl.offsetTop - 45))
     ) {
       isSwap = true;
       destEl.style.top = br * 51 + "px";
@@ -95,10 +93,10 @@ const swapElement = (sourceEl, destEl) => {
     if (
       (cc < ac &&
         (sourceEl.current.offsetLeft <= destEl.offsetLeft ||
-          sourceEl.current.offsetLeft <= destEl.offsetLeft + 10)) ||
+          sourceEl.current.offsetLeft <= destEl.offsetLeft + 45)) ||
       (cc > ac &&
         (sourceEl.current.offsetLeft >= destEl.offsetLeft ||
-          sourceEl.current.offsetLeft >= destEl.offsetLeft - 10))
+          sourceEl.current.offsetLeft >= destEl.offsetLeft - 45))
     ) {
       isSwap = true;
       destEl.style.left = ac * 51 + "px";
