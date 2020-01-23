@@ -56,10 +56,12 @@ const checkElements = (children, filledCellCol, filledCellRow) => {
 const getNum = num => {
   return Number(num);
 };
-const swapElement = (sourceEl, destEl, props) => {
-  console.log(sourceEl);
+const swapElement = (sourceEl, destEl) => {
+  // console.log(sourceEl);
+  let isSwap = false;
+  debugger;
   if (!sourceEl || !destEl) {
-    return;
+    return { isSwap };
   }
   let ac = getNum(sourceEl.current.getAttribute("data-col"));
   let br = getNum(sourceEl.current.getAttribute("data-row"));
@@ -71,11 +73,12 @@ const swapElement = (sourceEl, destEl, props) => {
     if (
       (dr < br &&
         (sourceEl.current.offsetTop <= destEl.offsetTop ||
-          sourceEl.current.offsetTop <= destEl.offsetTop + 10)) ||
+          sourceEl.current.offsetTop <= destEl.offsetTop + 51)) ||
       (dr > br &&
         (sourceEl.current.offsetTop >= destEl.offsetTop ||
-          sourceEl.current.offsetTop >= destEl.offsetTop - 10))
+          sourceEl.current.offsetTop >= destEl.offsetTop - 51))
     ) {
+      isSwap = true;
       destEl.style.top = br * 51 + "px";
       sourceEl.current.style.top = dr * 51 + "px";
       destEl.setAttribute("data-col", ac);
@@ -97,6 +100,7 @@ const swapElement = (sourceEl, destEl, props) => {
         (sourceEl.current.offsetLeft >= destEl.offsetLeft ||
           sourceEl.current.offsetLeft >= destEl.offsetLeft - 10))
     ) {
+      isSwap = true;
       destEl.style.left = ac * 51 + "px";
       sourceEl.current.style.left = cc * 51 + "px";
       destEl.setAttribute("data-col", ac);
@@ -108,6 +112,13 @@ const swapElement = (sourceEl, destEl, props) => {
       sourceEl.current.style.left = ac * 51 + "px";
     }
   }
+  return {
+    sourceElCol: ac,
+    sourceElRow: br,
+    destElCol: cc,
+    destElRow: dr,
+    isSwap
+  };
 };
 
 export default props => {
@@ -142,7 +153,19 @@ export default props => {
       } = checkElements(children, col, row);
       [preventX, preventY] = [stopX, stopY];
       document.onmouseup = e => {
-        swapElement(movingel, emptyEl, props);
+        let { isSwap, ...other } = swapElement(movingel, emptyEl, props);
+        if (isSwap) {
+          let { sourceElCol, sourceElRow, destElCol, destElRow } = other;
+          props.trackElementsFn(
+            sourceElCol,
+            sourceElRow,
+            destElCol,
+            destElRow,
+            props,
+            { isSwap: true }
+          );
+        }
+
         setMovingEl = 0;
         [preventX, preventY] = [0, 0];
         document.onmouseup = null;
