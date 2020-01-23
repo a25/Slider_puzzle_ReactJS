@@ -47,7 +47,7 @@ const checkElements = (children, filledCellCol, filledCellRow) => {
       emptyCellRow
     };
   }
-  console.log(result);
+
   return result;
 };
 // filled,blankel
@@ -55,9 +55,7 @@ const getNum = num => {
   return Number(num);
 };
 const swapElement = (sourceEl, destEl) => {
-  // console.log(sourceEl);
   let isSwap = false;
-  debugger;
   if (!sourceEl || !destEl) {
     return { isSwap };
   }
@@ -115,6 +113,8 @@ const swapElement = (sourceEl, destEl) => {
     sourceElRow: br,
     destElCol: cc,
     destElRow: dr,
+    sourceEl: sourceEl.current,
+    destEl,
     isSwap
   };
 };
@@ -153,13 +153,23 @@ export default props => {
       document.onmouseup = e => {
         let { isSwap, ...other } = swapElement(movingel, emptyEl, props);
         if (isSwap) {
-          let { sourceElCol, sourceElRow, destElCol, destElRow } = other;
+          let {
+            sourceElCol,
+            sourceElRow,
+            destElCol,
+            destElRow,
+            sourceEl,
+            destEl
+          } = other;
           props.trackElementsFn(
             sourceElCol,
             sourceElRow,
             destElCol,
             destElRow,
             props,
+            isSwap,
+            sourceEl,
+            destEl,
             { isSwap: true }
           );
         }
@@ -171,9 +181,8 @@ export default props => {
       };
       document.onmousemove = e => {
         e.preventDefault();
-        // console.log(beforeX, afterX, beforeY, afterY, preventX);
+
         if (!preventX) {
-          console.log("here...", x1, e.clientX);
           x3 = x1 - e.clientX;
         }
         if (!preventY) {

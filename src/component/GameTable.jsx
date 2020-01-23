@@ -14,6 +14,29 @@ const checkSequence = (matrix, n) => {
   }
   return 1;
 };
+const getAttribute = (el, attr) => Number(el.getAttribute(attr));
+const setAttribute = (el, attr, val) => el.setAttribute(attr, val);
+
+const ApplyHistory = (data, fun) => {
+  let { sourceEl, destEl } = data[0];
+  console.log("apply history....", { sourceEl, destEl });
+  let [destRow, destCol, srcRow, srcCol] = [
+    //here swapped as we are going back in time
+    getAttribute(sourceEl, "data-row"),
+    getAttribute(sourceEl, "data-col"),
+    getAttribute(destEl, "data-row"),
+    getAttribute(destEl, "data-col")
+  ];
+  sourceEl.style.top = srcRow * 51 + "px";
+  sourceEl.style.left = srcCol * 51 + "px";
+  destEl.style.top = destRow * 51 + "px";
+  destEl.style.left = destCol * 51 + "px";
+  setAttribute(sourceEl, "data-row", srcRow);
+  setAttribute(sourceEl, "data-col", srcCol);
+  setAttribute(destEl, "data-row", destRow);
+  setAttribute(destEl, "data-col", destCol);
+};
+// const ApplyHistory  => create reference of elemts history
 const trackElements = (
   sourceElCol,
   sourceElRow,
@@ -21,7 +44,9 @@ const trackElements = (
   destElRow,
   props,
   isSwap,
-  setHistory
+  setHistory,
+  sourceEl,
+  destEl
 ) => {
   if (isSwap) {
     let n = props.matrix[0].length;
@@ -29,12 +54,12 @@ const trackElements = (
     props.matrix[sourceElRow][sourceElCol] = props.matrix[destElRow][destElCol];
     props.matrix[destElRow][destElCol] = temp;
     setHistory(prev => {
-      console.log("kkk", prev);
-      return [...prev, { [sourceElRow]: destElRow, [sourceElCol]: destElCol }];
+      console.log(sourceEl, destEl);
+      return [...prev, { sourceEl, destEl }];
     });
     if (props.matrix[n - 1][n - 1] == 0) {
       let sequenceFound = checkSequence(props.matrix, n);
-      alert("sequenceFound.......");
+      alert("sequenceFound.......", sequenceFound);
     }
   }
 };
@@ -51,10 +76,7 @@ export default props => {
     let squareArray = [];
     let row, col;
     [row, col] = [-1, 0];
-    // console.log("hdh", props);
     for (let i = 0; i < number * number; i++) {
-      // console.log(props.number, DragElement);
-
       if (i % number == 0) {
         row += 1;
         matrix.push([i]);
@@ -73,7 +95,9 @@ export default props => {
             destElCol,
             destElRow,
             props,
-            isSwap
+            isSwap,
+            sourceEl,
+            destEl
           ) =>
             trackElements(
               sourceElCol,
@@ -82,7 +106,9 @@ export default props => {
               destElRow,
               props,
               isSwap,
-              setHistory
+              setHistory,
+              sourceEl,
+              destEl
             )
           }
           key={i.toString()}
@@ -114,6 +140,14 @@ export default props => {
       </div>
       <button
         onClick={() => {
+          // let tempHistory = ;
+          ApplyHistory(
+            history.length ? history.slice(-1) : [],
+            setHistory(prev => {
+              let temp = [...prev];
+              return temp.splice(temp.length - 1, 1);
+            })
+          );
           console.log(history);
         }}
       >
